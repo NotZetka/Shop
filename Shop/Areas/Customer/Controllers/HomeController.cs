@@ -5,6 +5,7 @@ using System.Diagnostics;
 
 namespace Shop.Controllers
 {
+    [Area("Customer")]
     public class HomeController : Controller
     {
         private readonly ApplicationDbContext dbContext;
@@ -15,6 +16,11 @@ namespace Shop.Controllers
         }
 
         public IActionResult Index()
+        {
+            return View();
+        }
+
+        public IActionResult Products()
         {
             var products = dbContext.Products.ToList();
             return View(products);

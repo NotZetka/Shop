@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Shop.DataAccess;
+using Microsoft.AspNetCore.Identity;
+using Shop.DataAccess.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +13,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
+builder.Services.AddDefaultIdentity<IdentityUser>()
+    .AddEntityFrameworkStores<ApplicationDbContext>();
+builder.Services.AddRazorPages();
 
 var app = builder.Build();
 
@@ -26,7 +31,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 SeedDatabase();
 app.UseRouting();
-
+app.UseAuthentication();
+app.MapRazorPages();
 
 
 app.UseAuthorization();
