@@ -10,6 +10,8 @@ namespace Shop.DataAccess.Models
         [Required]
         public double Price { get; set; }
         public Category? Category { get; set; }
+        [Required]
+        public string ImageUrl { get; set; }
 
     }
 }

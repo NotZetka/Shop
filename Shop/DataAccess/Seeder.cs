@@ -47,13 +47,13 @@ namespace Shop.DataAccess
                 Category balls = dbContext.Categories.FirstOrDefault(c => c.Name == "balls");
                 Category books = dbContext.Categories.FirstOrDefault(c => c.Name == "books");
                 var list = new List<Product> {
-                new() { Name = "Red Bike", Category = bikes, Price = 100.5 },
-                new() { Name = "Blue Bike", Category = bikes, Price = 70.25 },
-                new() { Name = "Green Bike", Category = bikes, Price = 800 },
-                new() { Name = "FootBall", Category = balls, Price = 40.2 },
-                new() { Name = "BasketBall", Category = balls, Price = 40.2 },
-                new() { Name = "FootBall", Category = balls, Price = 40.2 },
-                new() { Name = "Pan Tadeusz", Category = books, Price = 10 }
+                new() { Name = "Red Bike", Category = bikes, Price = 100.5, ImageUrl = @"\images\products\RedBike.jpg" },
+                new() { Name = "Blue Bike", Category = bikes, Price = 70.25, ImageUrl = @"\images\products\BlueBike.jpeg" },
+                new() { Name = "Green Bike", Category = bikes, Price = 800, ImageUrl = @"\images\products\GreenBike.jpg" },
+                new() { Name = "FootBall", Category = balls, Price = 40.2, ImageUrl = @"\images\products\FootBall.png" },
+                new() { Name = "BasketBall", Category = balls, Price = 21, ImageUrl = @"\images\products\Basketball.png" },
+                new() { Name = "TenissBall", Category = balls, Price = 15, ImageUrl = @"\images\products\TenissBall.jpg" },
+                new() { Name = "Pan Tadeusz", Category = books, Price = 10, ImageUrl = @"\images\products\PanTadeusz.jpg" }
                 };
                 dbContext.Products.AddRange(list);
                 dbContext.SaveChanges();
