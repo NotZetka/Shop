@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using Shop.DataAccess;
 using Microsoft.AspNetCore.Identity;
 using Shop.DataAccess.Models;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using Shop.Utility;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,8 +14,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
-
-builder.Services.AddDefaultIdentity<IdentityUser>()
+builder.Services.AddScoped<IEmailSender, EmailSender>();
+builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+    .AddDefaultTokenProviders()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddRazorPages();
 
