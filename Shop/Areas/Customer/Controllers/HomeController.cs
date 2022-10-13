@@ -17,6 +17,7 @@ namespace Shop.Controllers
 
         public IActionResult Index()
         {
+            TempData["Success"] = "test";
             return View();
         }
 
