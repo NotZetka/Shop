@@ -17,14 +17,7 @@ namespace Shop.Controllers
 
         public IActionResult Index()
         {
-            TempData["Success"] = "test";
             return View();
-        }
-
-        public IActionResult Products()
-        {
-            var products = dbContext.Products.ToList();
-            return View(products);
         }
 
         public IActionResult Privacy()
