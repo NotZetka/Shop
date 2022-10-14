@@ -35,7 +35,7 @@
                             <a asp-controller="Product" asp-action="Edit" asp-route-id="@product.Id" class="btn btn-primary mx-2">
                                 <i class="bi bi-pencil-fill"></i> Edit
                             </a>
-                            <a asp-controller="Product" asp-action="Delete" asp-route-id="@product.Id"
+                            <a asp-controller="Product" onclick="return Delete()" asp-action="Delete" asp-route-id="@product.Id"
                            class="btn btn-danger mx-2"> <i class="bi bi-trash-fill"></i> Delete</a>
                         </div>
                     </td>
@@ -44,3 +44,21 @@
         </tbody>
     </table>
 </div>
+@section Scripts{
+    @{
+        <partial name="_ValidationScriptsPartial"/>
+    }
+    <script>
+    function Delete(){
+        if(document.getElementById("uploadBox").value==""){
+            Swal.fire({
+              icon: 'error',
+              title: 'Oops...',
+              text: 'Please upload an image'
+            })
+            return false;
+        }
+        return true;
+    }
+    </script>
+}

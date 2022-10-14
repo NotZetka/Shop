@@ -48,5 +48,16 @@ namespace Shop.Areas.Admin.Controllers
             }
             return View(product);
         }
+        public IActionResult Delete(int id)
+        {
+            var product = dbContext.Products.FirstOrDefault(p => p.Id == id);
+            if(product != null)
+            {
+                dbContext.Products.Remove(product);
+                dbContext.SaveChanges(true);
+                TempData["success"] = "Product deleted successfully";
+            }
+            return RedirectToAction("Index");
+        }
     }
 }
