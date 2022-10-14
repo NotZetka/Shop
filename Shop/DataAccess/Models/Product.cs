@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.ComponentModel.DataAnnotations;
 
 namespace Shop.DataAccess.Models
 {
@@ -10,7 +11,7 @@ namespace Shop.DataAccess.Models
         [Required]
         public double Price { get; set; }
         public Category? Category { get; set; }
-        [Required]
+        [ValidateNever]
         public string ImageUrl { get; set; }
 
     }

@@ -14,7 +14,7 @@ namespace Shop.Areas.Customer.Controllers
         {
             this.dbContext = dbContext;
         }
-        public IActionResult Products()
+        public IActionResult Index()
         {
             var products = dbContext.Products.ToList();
             return View(products);
