@@ -48,6 +48,7 @@ namespace Shop.Areas.Admin.Controllers
             }
             return View(product);
         }
+        //[HttpDelete]
         public IActionResult Delete(int id)
         {
             var product = dbContext.Products.FirstOrDefault(p => p.Id == id);
