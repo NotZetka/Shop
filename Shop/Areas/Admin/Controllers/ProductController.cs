@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Shop.DataAccess;
 using Shop.DataAccess.Models;
+using Shop.DataAccess.ViewModels;
 
 namespace Shop.Areas.Admin.Controllers
 {
@@ -22,11 +24,19 @@ namespace Shop.Areas.Admin.Controllers
         }
         public IActionResult Create()
         {
-            return View();
+            var categories = dbContext.Categories.Select(c=>new SelectListItem()
+            {
+                Value = c.Id.ToString(),
+                Text = c.Name,
+            });
+            var productVM = new ProductVM() { Product = new() ,Categories = categories };
+            return View(productVM);
         }
         [HttpPost]
-        public IActionResult Create(Product product, IFormFile? file)
+        public IActionResult Create(ProductVM productVM, IFormFile? file)
         {
+            var product = productVM.Product;
+            
             if (ModelState.IsValid)
             {
                 var wwwRootPath = webHostEnvironment.WebRootPath;
@@ -46,7 +56,7 @@ namespace Shop.Areas.Admin.Controllers
                 }
                 return RedirectToAction("Index");
             }
-            return View(product);
+            return View(productVM);
         }
         //[HttpDelete]
         public IActionResult Delete(int id)

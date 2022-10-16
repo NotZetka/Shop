@@ -15,8 +15,16 @@
                         <div class="col-3 col-lg-8">
 
                             <div class="row pl-2">
-                                <h5 class="text-muted">Category : @Model.Product.Category.Name</h5>
-                            </div>
+                            @if(Model.Product.Category != null)
+                            {
+                                <h5 class="text-muted">Category : @Model.Product.Category.Name </h5>
+                            }
+                            else
+                            {
+                                <h5 class="text-muted">Category : No category </h5>
+                            }
+
+                        </div>
                             <div class="row pl-2">
                                 <h5 class="text-muted">Price : @Model.Product.Price $</h5>
                             </div>
