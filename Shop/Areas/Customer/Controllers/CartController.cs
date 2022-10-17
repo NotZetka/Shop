@@ -120,6 +120,7 @@ namespace Shop.Areas.Customer.Controllers
             var order = new Order()
             {
                 ApplicationUser = user,
+                ApplicationUserId = claim.Value,
                 Name = user.Name,
                 StreetAddress = user.StreetAddress,
                 City = user.City,
@@ -128,6 +129,26 @@ namespace Shop.Areas.Customer.Controllers
                 Carts = orderProducts
             };
             return View(order);
+        }
+        [ActionName("Summary")]
+        [HttpPost]
+        public IActionResult SummaryPost(Order order)
+        {
+            order.ApplicationUser = dbContext.ApplicationUsers.FirstOrDefault(x=>x.Id == order.ApplicationUserId);
+            List<OrderProduct> orderProducts = dbContext.ShoppingCarts.Include(x => x.Product).Where(x => x.ApplicationUserId == order.ApplicationUserId).Select(x => new OrderProduct()
+            {
+                Price = x.Product.Price,
+                ProductName = x.Product.Name,
+                Quantity = x.Quantity
+            }).ToList();
+            order.Date = DateTime.Today;
+            order.Carts = orderProducts;
+            dbContext.Orders.Add(order);
+            var cart = dbContext.ShoppingCarts.Where(x => x.ApplicationUserId == order.ApplicationUserId).ToList();
+            dbContext.ShoppingCarts.RemoveRange(cart);
+            dbContext.SaveChanges();
+            TempData["success"] = "purchase completed";
+            return RedirectToAction("Index");
         }
     }
 }

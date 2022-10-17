@@ -10,6 +10,9 @@
 
 <form method="post">
     <br />
+    <input hidden asp-for=ApplicationUser />
+    <input hidden asp-for=ApplicationUserId />
+    <input hidden asp-for=Carts />
     <div class="container">
         <div class="card">
             <div class="card-header bg-primary text-light ml-0">
@@ -99,6 +102,13 @@
                                     <strong class="text-info">@ordertotal.ToString("c")</strong>
                                 </li>
                             </ul>
+                            @if(ordertotal==0){
+                                <button disabled class="btn btn-success form-control">Summary</button>
+                            }
+                            else
+                            {
+                                <button type="submit" class="btn btn-primary form-control">Place Order</button>
+                            }
                         </div>
                     </div>
                 </div>

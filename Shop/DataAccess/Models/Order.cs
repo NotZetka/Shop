@@ -25,6 +25,7 @@ namespace Shop.DataAccess.Models
         [DataType(DataType.PhoneNumber)]
         public string PhoneNumber { get; set; }
         public IEnumerable<OrderProduct> Carts { get; set; }
+        public DateTime Date { get; set; }
 
     }
 }
