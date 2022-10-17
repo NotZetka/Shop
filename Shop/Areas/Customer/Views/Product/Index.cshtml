@@ -25,7 +25,7 @@
                         <a class="btn btn-primary form-control" asp-action="Details" asp-route-productId=@product.Id> Details</a>
                     </div>
                     <div>
-                        <a class="btn btn-secondary form-control" asp-route-productId=@product.Id>Add to card</a>
+                        <a class="btn btn-secondary form-control" asp-controller="Cart" asp-action="Add" asp-route-productId=@product.Id>Add to card</a>
                     </div>
                 </div>
             </div>

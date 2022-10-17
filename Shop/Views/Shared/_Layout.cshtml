@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using Shop.Utility
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -24,12 +25,22 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="Customer" asp-controller="Product" asp-action="Index">Products</a>
                         </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Managing</a>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" asp-area="Admin" asp-controller="Product" asp-action="Index">Products</a>
-                            </div>
+                        @if (User.IsInRole(SD.Role_Admin))
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Managing</a>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" asp-area="Admin" asp-controller="Product" asp-action="Index">Products</a>
+                                    <a class="dropdown-item" asp-area="Admin" asp-controller="Category" asp-action="Index">Categories</a>
+                                </div>
+                            </li>
+                        }
+                        @if (User.IsInRole(SD.Role_Admin) || User.IsInRole(SD.Role_User))
+                        {
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="Customer" asp-controller="Cart" asp-action="Index"><i class="bi bi-bag-fill"></i></a>
                         </li>
+                        }
                     </ul>
                 </div>
                 <partial name = "_LoginPartial" />

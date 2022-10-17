@@ -1,0 +1,108 @@
+﻿@using Shop.DataAccess.Models
+@model Order
+@{
+    double ordertotal = 0;
+	foreach(var cartItem in Model.Carts)
+	{
+		ordertotal += cartItem.Quantity * cartItem.Price;
+	}
+}
+
+<form method="post">
+    <br />
+    <div class="container">
+        <div class="card">
+            <div class="card-header bg-primary text-light ml-0">
+                <div class=" row container">
+                    <div class="col-6">
+                        <i class="fa fa-shopping-cart"></i> &nbsp;
+                        Order Summary
+                    </div>
+                    <div class="col-6 text-end">
+                        <a asp-action="Index" class="btn btn-outline-info btn-sm">Back to Cart</a>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="container rounded p-2">
+                    <div class="row">
+                        <div class="col-12 col-lg-6 pb-4">
+                            <div class="row">
+                                <h4 class="d-flex justify-content-between align-items-center mb-3">
+                                    <span class="text-info">Shipping Details:</span>
+                                </h4>
+                            </div>
+                            <div class="row my-1">
+                                <div class="col-3">
+                                    <label>Name</label>
+                                </div>
+                                <div class="col-9">
+                                    <input asp-for="Name" class="form-control" />
+                                    <span asp-validation-for="Name" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="row my-1">
+                                <div class="col-3">
+                                    <label>Phone</label>
+                                </div>
+                                <div class="col-9">
+                                    <input asp-for="PhoneNumber" class="form-control" />
+                                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="row my-1">
+                                <div class="col-3">
+                                    <label>Street Address</label>
+                                </div>
+                                <div class="col-9">
+                                    <input asp-for="StreetAddress" class="form-control" />
+                                    <span asp-validation-for="StreetAddress" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="row my-1">
+                                <div class="col-3">
+                                    <label>City</label>
+                                </div>
+                                <div class="col-9">
+                                    <input asp-for="City" class="form-control" />
+                                    <span asp-validation-for="City" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="row my-1">
+                                <div class="col-3">
+                                    <label>Postal Code</label>
+                                </div>
+                                <div class="col-9">
+                                    <input asp-for="PostalCode" class="form-control" />
+                                    <span asp-validation-for="PostalCode" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-5 offset-lg-1">
+                            <h4 class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="text-info">Order Summary:</span>
+                            </h4>
+                            <ul class="list-group mb-3">
+                                @foreach(var cart in Model.Carts)
+                                {
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <div>
+                                        <h6 class="my-0">@cart.ProductName</h6>
+                                        <small class="text-muted">Quantity: @cart.Quantity</small>
+                                    </div>
+                                    <span class="text-muted">@((cart.Price * cart.Quantity).ToString("c")) </span>
+                                </li>
+                                }
+
+                                <li class="list-group-item d-flex justify-content-between bg-light">
+                                    <small class="text-info">Total (USD)</small>
+                                    <strong class="text-info">@ordertotal.ToString("c")</strong>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
