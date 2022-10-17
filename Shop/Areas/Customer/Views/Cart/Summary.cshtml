@@ -1,18 +1,12 @@
 ﻿@using Shop.DataAccess.Models
 @model Order
-@{
-    double ordertotal = 0;
-	foreach(var cartItem in Model.Carts)
-	{
-		ordertotal += cartItem.Quantity * cartItem.Price;
-	}
-}
 
 <form method="post">
     <br />
     <input hidden asp-for=ApplicationUser />
     <input hidden asp-for=ApplicationUserId />
     <input hidden asp-for=Carts />
+    <input hidden asp-for=TotalPrice />
     <div class="container">
         <div class="card">
             <div class="card-header bg-primary text-light ml-0">
@@ -98,11 +92,11 @@
                                 }
 
                                 <li class="list-group-item d-flex justify-content-between bg-light">
-                                    <small class="text-info">Total (USD)</small>
-                                    <strong class="text-info">@ordertotal.ToString("c")</strong>
+                                    <small class="text-info">Total</small>
+                                    <strong class="text-info">@Model.TotalPrice.ToString("c")</strong>
                                 </li>
                             </ul>
-                            @if(ordertotal==0){
+                            @if(Model.TotalPrice==0){
                                 <button disabled class="btn btn-success form-control">Summary</button>
                             }
                             else

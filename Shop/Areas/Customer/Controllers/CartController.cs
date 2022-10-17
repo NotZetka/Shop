@@ -126,7 +126,8 @@ namespace Shop.Areas.Customer.Controllers
                 City = user.City,
                 PostalCode = user.PostalCode,
                 PhoneNumber = user.PhoneNumber,
-                Carts = orderProducts
+                Carts = orderProducts,
+                TotalPrice = orderProducts.Select(x => x.Price*x.Quantity).Sum()
             };
             return View(order);
         }
@@ -141,7 +142,7 @@ namespace Shop.Areas.Customer.Controllers
                 ProductName = x.Product.Name,
                 Quantity = x.Quantity
             }).ToList();
-            order.Date = DateTime.Today;
+            order.Date = DateTime.Now;
             order.Carts = orderProducts;
             dbContext.Orders.Add(order);
             var cart = dbContext.ShoppingCarts.Where(x => x.ApplicationUserId == order.ApplicationUserId).ToList();
