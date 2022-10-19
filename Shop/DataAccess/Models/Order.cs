@@ -24,9 +24,10 @@ namespace Shop.DataAccess.Models
         [Required]
         [DataType(DataType.PhoneNumber)]
         public string PhoneNumber { get; set; }
-        public IEnumerable<OrderProduct> Carts { get; set; }
+        public IEnumerable<OrderProduct> Carts { get; set; } = new List<OrderProduct>();
         public double TotalPrice { get; set; } = 0;
         public DateTime Date { get; set; }
-
+        public string? SessionId { get; set; }
+        public string? PaymentIntendId { get; set; }
     }
 }

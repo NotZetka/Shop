@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Shop.DataAccess.Models;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Shop.Utility;
+using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +20,7 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>()
     .AddDefaultTokenProviders()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddRazorPages();
+builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
 
 var app = builder.Build();
 
@@ -30,6 +32,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey").Get<string>();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 SeedDatabase();
