@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Shop.DataAccess;
 using Shop.Utility;
@@ -7,6 +8,7 @@ using System.Security.Claims;
 namespace Shop.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = SD.Role_Admin)]
     public class OrdersController : Controller
     {
         private readonly ApplicationDbContext dbContext;
