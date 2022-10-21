@@ -152,7 +152,7 @@ namespace Shop.Areas.Customer.Controllers
             dbContext.Orders.Add(order);
             dbContext.SaveChanges();
             //stripe
-            var domain = "https://localhost:7062";
+            var domain = $"{Request.Scheme}://{Request.Host}";
             var options = new SessionCreateOptions
             {
                 LineItems = new List<SessionLineItemOptions>(),            
