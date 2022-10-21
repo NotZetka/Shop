@@ -10,7 +10,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit" method="post" enctype="multipart/form-data">
+        <form method="post" asp-action="Edit"  enctype="multipart/form-data">
             
             <input asp-for=Product.Id hidden/>
             <input asp-for=Product.ImageUrl hidden/>
@@ -30,11 +30,11 @@
                 <input type="file" id="uploadBox" name="file" class="form-control" />
             </div>
             <div class="form-group">
-                <label asp-for="Product.Category"></label>
-                <select asp-for="Product.Category" asp-items="@Model.Categories" class="form-select">
+                <label asp-for="Product.CategoryId"></label>
+                <select asp-for="Product.CategoryId" asp-items="@Model.Categories" class="form-select">
                 <option disabled selected>--Select Category--</option>
             </select>
-                <span asp-validation-for="Product.Category" class="text-danger"></span>
+                <span asp-validation-for="Product.CategoryId" class="text-danger"></span>
             </div>
             <br />
             <div class="w-75 btn-group" role="group">

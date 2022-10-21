@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Shop.DataAccess;
+using Shop.Services;
 using System.Security.Claims;
 
 namespace Shop.Areas.Customer.Controllers
@@ -7,18 +8,23 @@ namespace Shop.Areas.Customer.Controllers
     [Area("Customer")]
     public class OrdersController : Controller
     {
-        private readonly ApplicationDbContext dbContext;
+        private readonly OrderService orderService;
 
-        public OrdersController(ApplicationDbContext dbContext)
+        public OrdersController(OrderService orderService)
         {
-            this.dbContext = dbContext;
+            this.orderService = orderService;
         }
         public IActionResult Index()
         {
+            var claim = getClaim();
+            var orders = orderService.getUserOrders(claim);
+            return View(orders);
+        }
+        private Claim getClaim()
+        {
             var claimsIdentity = (ClaimsIdentity)User.Identity;
             var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-            var orders = dbContext.Orders.Where(x => x.ApplicationUserId == claim.Value).ToList();
-            return View(orders);
+            return claim;
         }
     }
 }

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Shop.DataAccess;
+using Shop.Services;
 using Shop.Utility;
 using System.Security.Claims;
 
@@ -11,16 +12,16 @@ namespace Shop.Areas.Admin.Controllers
     [Authorize(Roles = SD.Role_Admin)]
     public class OrdersController : Controller
     {
-        private readonly ApplicationDbContext dbContext;
+        private readonly OrderService service;
 
-        public OrdersController(ApplicationDbContext dbContext)
+        public OrdersController(OrderService service)
         {
-            this.dbContext = dbContext;
+            this.service = service;
         }
 
         public IActionResult Index()
         {
-            var orders = dbContext.Orders.Include(x=>x.ApplicationUser).ToList();
+            var orders = service.getAllOrders();
             return View(orders);
         } 
     }

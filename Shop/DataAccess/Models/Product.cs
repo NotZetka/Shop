@@ -10,6 +10,7 @@ namespace Shop.DataAccess.Models
         public string Name { get; set; }
         [Required]
         public double Price { get; set; }
+        public int? CategoryId { get; set; }
         public Category? Category { get; set; }
         [ValidateNever]
         public string ImageUrl { get; set; }

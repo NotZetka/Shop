@@ -240,7 +240,7 @@ namespace Shop.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("Shop.DataAccess.Models.Order", b =>
@@ -291,7 +291,7 @@ namespace Shop.Migrations
 
                     b.HasIndex("ApplicationUserId");
 
-                    b.ToTable("Orders");
+                    b.ToTable("Orders", (string)null);
                 });
 
             modelBuilder.Entity("Shop.DataAccess.Models.OrderProduct", b =>
@@ -319,7 +319,7 @@ namespace Shop.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("OrderProducts");
+                    b.ToTable("OrderProducts", (string)null);
                 });
 
             modelBuilder.Entity("Shop.DataAccess.Models.Product", b =>
@@ -348,7 +348,7 @@ namespace Shop.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("Shop.DataAccess.Models.ShoppingCart", b =>
@@ -375,7 +375,7 @@ namespace Shop.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ShoppingCarts");
+                    b.ToTable("ShoppingCarts", (string)null);
                 });
 
             modelBuilder.Entity("Shop.DataAccess.Models.ApplicationUser", b =>

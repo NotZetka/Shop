@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Shop.DataAccess;
 using Shop.DataAccess.Models;
 using Shop.DataAccess.ViewModels;
+using Shop.Services;
 using Shop.Utility;
 
 namespace Shop.Areas.Admin.Controllers
@@ -12,17 +13,15 @@ namespace Shop.Areas.Admin.Controllers
     [Authorize(Roles = SD.Role_Admin)]
     public class CategoryController : Controller
     {
-        private readonly ApplicationDbContext dbContext;
-        private readonly IWebHostEnvironment webHostEnvironment;
+        private readonly CategoryService categoryService;
 
-        public CategoryController(ApplicationDbContext dbContext, IWebHostEnvironment webHostEnvironment)
+        public CategoryController(CategoryService categoryService)
         {
-            this.dbContext = dbContext;
-            this.webHostEnvironment = webHostEnvironment;
+            this.categoryService = categoryService;
         }
         public IActionResult Index()
         {
-            var categories = dbContext.Categories.ToList();
+            var categories = categoryService.getAllCategories();
             return View(categories);
         }
         public IActionResult Create()
@@ -34,8 +33,7 @@ namespace Shop.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                dbContext.Categories.Add(category);
-                dbContext.SaveChanges();
+                categoryService.addCategory(category);
                 TempData["success"] = "Category created successfully";
             }
 
@@ -44,14 +42,14 @@ namespace Shop.Areas.Admin.Controllers
         }
         public IActionResult Delete(int id)
         {
-            var category = dbContext.Categories.FirstOrDefault(p => p.Id == id);
+            var category = categoryService.getCategoryById(id);
             if(category != null)
             {
-                dbContext.Categories.Remove(category);
-                dbContext.SaveChanges(true);
+                categoryService.removeCategory(category);
                 TempData["success"] = "Category deleted successfully";
             }
             return RedirectToAction("Index");
         }
+    
     }
 }

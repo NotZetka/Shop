@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Shop.DataAccess;
 using Shop.DataAccess.Models;
+using Shop.Services;
 using Stripe.Checkout;
 using System.Security.Claims;
 
@@ -10,76 +11,53 @@ namespace Shop.Areas.Customer.Controllers
     [Area("Customer")]
     public class CartController : Controller
     {
-        private readonly ApplicationDbContext dbContext;
-        private readonly IWebHostEnvironment webHostEnvironment;
+        private readonly CartService cartService;
+        private readonly ShopProductService productService;
+        private readonly OrderService orderService;
+        private readonly UserService userService;
 
-        public CartController(ApplicationDbContext dbContext, IWebHostEnvironment webHostEnvironment)
+        public CartController(CartService cartService, ShopProductService productService, OrderService orderService,UserService userService)
         {
-            this.dbContext = dbContext;
-            this.webHostEnvironment = webHostEnvironment;
+            this.cartService = cartService;
+            this.productService = productService;
+            this.orderService = orderService;
+            this.userService = userService;
         }
         public IActionResult Index()
         {
-            var claimsIdentity = (ClaimsIdentity)User.Identity;
-            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            var claim = getClaim();
+            
             if (claim == null)
             {
                 TempData["error"] = "User not logged in";
                 return RedirectToAction("Index", "Product");
             }
-            var list = dbContext.ShoppingCarts.
-                Include(x => x.ApplicationUser).
-                Include(x => x.Product).
-                Where(x => x.ApplicationUserId == claim.Value).ToList();
+            var list = cartService.getUserCarts(claim);
+
             return View(list);
         }
+
+
         public IActionResult Add(int productId)
         {
-            var product = dbContext.Products.FirstOrDefault(x => x.Id == productId);
-            var claimsIdentity = (ClaimsIdentity)User.Identity;
-            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            var product = productService.getProductById(productId);
+            var claim = getClaim();
             if (claim == null)
             {
                 TempData["error"] = "User not logged in";
                 return RedirectToAction("Index", "Home");
             }
-            var cart = dbContext.ShoppingCarts.FirstOrDefault(x => x.ApplicationUserId == claim.Value && x.ProductId == productId);
-            if (cart != null)
-            {
-                cart.Quantity += 1;
-                dbContext.ShoppingCarts.Update(cart);
-            }
-            else if (product != null)
-            {
-                cart = new ShoppingCart()
-                {
-                    Quantity = 1,
-                    Product = product,
-                    ApplicationUser = dbContext.ApplicationUsers.FirstOrDefault(x => x.Id == claim.Value)
-                };
-                dbContext.ShoppingCarts.Add(cart);
-            }
-            dbContext.SaveChanges();
+            var cart = cartService.getCart(productId, claim);
+            cartService.addCart(cart,product,claim);
             return RedirectToAction("Index");
         }
         public IActionResult Subtract(int productId)
         {
-            var product = dbContext.Products.FirstOrDefault(x => x.Id == productId);
-            var claimsIdentity = (ClaimsIdentity)User.Identity;
-            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-            var cart = dbContext.ShoppingCarts.FirstOrDefault(x => x.ApplicationUserId == claim.Value && x.ProductId == productId);
+            var claim = getClaim();
+            var cart = cartService.getCart(productId, claim);
             if (cart != null)
             {
-                cart.Quantity -= 1;
-                if (cart.Quantity <= 0)
-                {
-                    dbContext.Remove(cart);
-                }
-                else
-                {
-                    dbContext.ShoppingCarts.Update(cart);
-                }
-                dbContext.SaveChanges();
+                cartService.subtract(cart);
             }
             else
             {
@@ -89,14 +67,12 @@ namespace Shop.Areas.Customer.Controllers
         }
         public IActionResult Remove(int productId)
         {
-            var product = dbContext.Products.FirstOrDefault(x => x.Id == productId);
-            var claimsIdentity = (ClaimsIdentity)User.Identity;
-            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-            var cart = dbContext.ShoppingCarts.FirstOrDefault(x => x.ApplicationUserId == claim.Value && x.ProductId == productId);
+            var product = productService.getProductById(productId);
+            var claim = getClaim();
+            var cart = cartService.getCart(productId, claim);
             if (cart != null)
             {
-                dbContext.Remove(cart);
-                dbContext.SaveChanges();
+                cartService.removeCart(cart);
             }
             else
             {
@@ -107,20 +83,15 @@ namespace Shop.Areas.Customer.Controllers
         }
         public IActionResult Summary()
         {
-            var claimsIdentity = (ClaimsIdentity)User.Identity;
-            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            var claim = getClaim();
             if (claim == null)
             {
                 TempData["error"] = "User not logged in";
                 return RedirectToAction("Index", "Product");
             }
-            var user = dbContext.ApplicationUsers.FirstOrDefault(x => x.Id == claim.Value.ToString());
-            List<OrderProduct> orderProducts = dbContext.ShoppingCarts.Include(x => x.Product).Where(x => x.ApplicationUserId == claim.Value).Select(x => new OrderProduct()
-            {
-                Price = x.Product.Price,
-                ProductName = x.Product.Name,
-                Quantity = x.Quantity
-            }).ToList();
+            var user = userService.getUser(claim);
+
+            var orderProducts = orderService.getOrderProducts(claim);
             var order = new Order()
             {
                 ApplicationUser = user,
@@ -139,26 +110,19 @@ namespace Shop.Areas.Customer.Controllers
         [HttpPost]
         public IActionResult SummaryPost(Order order)
         {
-            order.ApplicationUser = dbContext.ApplicationUsers.FirstOrDefault(x => x.Id == order.ApplicationUserId);
-            List<OrderProduct> orderProducts = dbContext.ShoppingCarts.Include(x => x.Product).Where(x => x.ApplicationUserId == order.ApplicationUserId).Select(x => new OrderProduct()
-            {
-                Price = x.Product.Price,
-                ProductName = x.Product.Name,
-                Quantity = x.Quantity
-            }).ToList();
+            order.ApplicationUser = userService.getUserById(order.ApplicationUserId);
             order.Date = DateTime.Now;
+            var orderProducts = orderService.getOrderProducts(order.ApplicationUser.Id);
             order.Carts = orderProducts;
-
-            dbContext.Orders.Add(order);
-            dbContext.SaveChanges();
+            orderService.addOrder(order);
             //stripe
             var domain = $"{Request.Scheme}://{Request.Host}";
             var options = new SessionCreateOptions
             {
-                LineItems = new List<SessionLineItemOptions>(),            
+                LineItems = new List<SessionLineItemOptions>(),
                 Mode = "payment",
-                SuccessUrl = domain+$"/Customer/Cart/OrderConfirmation?id={order.Id}",
-                CancelUrl = domain+$"/Customer/Cart",
+                SuccessUrl = domain + $"/Customer/Cart/OrderConfirmation?id={order.Id}",
+                CancelUrl = domain + $"/Customer/Cart",
             };
 
             foreach (var item in orderProducts)
@@ -168,7 +132,7 @@ namespace Shop.Areas.Customer.Controllers
                 {
                     PriceData = new SessionLineItemPriceDataOptions
                     {
-                        UnitAmount = (long)(item.Price*100),
+                        UnitAmount = (long)(item.Price * 100),
                         Currency = "pln",
                         ProductData = new SessionLineItemPriceDataProductDataOptions
                         {
@@ -178,33 +142,40 @@ namespace Shop.Areas.Customer.Controllers
                     },
                     Quantity = item.Quantity,
                 });
-            
+
             }
 
             var service = new SessionService();
             Session session = service.Create(options);
             order.SessionId = session.Id;
             order.PaymentIntendId = session.PaymentIntentId;
-            dbContext.Orders.Update(order);
-            dbContext.SaveChanges();
+            orderService.updateOrder(order);
             Response.Headers.Add("Location", session.Url);
             return new StatusCodeResult(303);
 
-            
+
         }
+
         public IActionResult OrderConfirmation(int id)
         {
-            var order = dbContext.Orders.SingleOrDefault(x => x.Id == id);
+            var order = orderService.getOrderById(id);
+                
             var service = new SessionService();
             Session session = service.Get(order.SessionId);
             if (session.PaymentStatus.ToLower() == "paid")
             {
-                var cart = dbContext.ShoppingCarts.Where(x => x.ApplicationUserId == order.ApplicationUserId).ToList();
-                dbContext.ShoppingCarts.RemoveRange(cart);
-                dbContext.SaveChanges();
+                var carts = cartService.getUserCarts(order.ApplicationUserId);
+                cartService.removeCarts(carts);
                 return View(id);
             }
-            return RedirectToAction("Index","Home");
+            return RedirectToAction("Index", "Home");
+        }
+
+        private Claim getClaim()
+        {
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            return claim;
+        }
         }
     }
-}

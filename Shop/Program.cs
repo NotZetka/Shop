@@ -5,12 +5,17 @@ using Shop.DataAccess.Models;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Shop.Utility;
 using Stripe;
+using Shop.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<Seeder>();
+builder.Services.AddScoped<CategoryService>();
+builder.Services.AddScoped<OrderService>();
+builder.Services.AddScoped<ShopProductService>();
+builder.Services.AddScoped<CartService>();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));

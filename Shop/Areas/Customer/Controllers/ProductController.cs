@@ -2,26 +2,27 @@
 using Microsoft.EntityFrameworkCore;
 using Shop.DataAccess;
 using Shop.DataAccess.ViewModels;
+using Shop.Services;
 
 namespace Shop.Areas.Customer.Controllers
 {
     [Area("Customer")]
     public class ProductController : Controller
     {
-        private readonly ApplicationDbContext dbContext;
+        private readonly ShopProductService productService;
 
-        public ProductController(ApplicationDbContext dbContext)
+        public ProductController(ShopProductService productService)
         {
-            this.dbContext = dbContext;
+            this.productService = productService;
         }
         public IActionResult Index()
         {
-            var products = dbContext.Products.ToList();
+            var products = productService.getAllProducts();
             return View(products);
         }
         public IActionResult Details(int productId)
         {
-            var product = dbContext.Products.Include(x => x.Category).SingleOrDefault(p => p.Id == productId);
+            var product = productService.getProductById(productId);
             var productVM = new ProductVM { Product = product };
             return View(productVM);
         }
