@@ -2,7 +2,7 @@
 
 Welcome to our online shop website repository!
 
-![Shop Website](https://github.com/NotZetka/Shop/assets/45211769/648b9c7a-7b10-47aa-bc94-ad1626e257f1)
+https://github.com/NotZetka/Shop/assets/45211769/fe8d0989-d739-4b46-9e68-3d920b216b99
 
 ## Description
 
