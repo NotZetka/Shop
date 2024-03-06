@@ -1,4 +1,10 @@
 A site for online shop.
 
-Demo video:
-[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/_ivDYpmKYfE/0.jpg)](https://www.youtube.com/watch?v=_ivDYpmKYfE)
+https://github.com/NotZetka/Shop/assets/45211769/648b9c7a-7b10-47aa-bc94-ad1626e257f1
+
+Used technologies:
+- .NET
+- ASP.NET
+- EntityFrameworkCore
+- SQL Server
+- Stripe.Net
